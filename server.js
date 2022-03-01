@@ -9,6 +9,28 @@ require('dotenv').config();
 const apiRoutes         = require('./routes/api.js');
 const fccTestingRoutes  = require('./routes/fcctesting.js');
 const runner            = require('./test-runner');
+const mongoose = require("mongoose");
+
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+const { Schema } = mongoose;
+const { model } = mongoose;
+
+const issuesSchema = new Schema({
+  issue_title: { type: String, required: true }, // String is shorthand for {type: String}
+  issue_text: { type: String, required: true },
+  created_by: { type: String, required: true },
+  assigned_to: String,
+  status_text: String,
+  created_on: { type: Date, default: Date.now },
+  updated_on: { type: Date, default: Date.now },
+  open: {type:Boolean, default: true}
+});
+
+const Issues = model("Issues", issuesSchema);
 
 let app = express();
 
@@ -37,7 +59,7 @@ app.route('/')
 fccTestingRoutes(app);
 
 //Routing for API 
-apiRoutes(app);  
+apiRoutes(app, Issues);  
     
 //404 Not Found Middleware
 app.use(function(req, res, next) {
@@ -63,3 +85,4 @@ const listener = app.listen(process.env.PORT || 3000, function () {
 });
 
 module.exports = app; //for testing
+//module.exports = Issues;
