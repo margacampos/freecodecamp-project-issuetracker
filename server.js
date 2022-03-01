@@ -27,7 +27,8 @@ const issuesSchema = new Schema({
   status_text: String,
   created_on: { type: Date, default: Date.now },
   updated_on: { type: Date, default: Date.now },
-  open: {type:Boolean, default: true}
+  open: {type:Boolean, default: true},
+  project: {type: String, required: true}
 });
 
 const Issues = model("Issues", issuesSchema);
